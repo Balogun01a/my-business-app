@@ -1,5 +1,5 @@
 /* ============================================================
-   Pinnacle Tax & Accounting — Professional Website Styles
+   Tax Professional Solutions — Website Styles
    Color Palette: Navy #1e3a5f | Gold #c9a84c | White #ffffff
    ============================================================ */
 
@@ -16,6 +16,8 @@
   --gold: #c9a84c;
   --gold-light: #dfc06e;
   --gold-pale: #fdf6e3;
+  /* Darker gold for text on light backgrounds — passes WCAG AA 4.5:1 on white */
+  --gold-accessible: #7a6018;
   --white: #ffffff;
   --off-white: #f8f9fb;
   --text: #1a1a2e;
@@ -25,6 +27,7 @@
   --shadow-md: rgba(30, 58, 95, 0.14);
   --radius: 12px;
   --radius-lg: 20px;
+  --focus-ring: 0 0 0 3px #c9a84c;
 }
 
 html {
@@ -34,6 +37,68 @@ html {
 html, body {
   overflow-x: hidden;
 }
+
+/* ============================================================
+   ACCESSIBILITY — Skip link, focus styles, screen-reader utils
+   ============================================================ */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  background: var(--navy);
+  color: var(--white);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 var(--radius) var(--radius);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  z-index: 9999;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Global focus-visible ring — consistent and clearly visible */
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Remove focus ring when using mouse (only show for keyboard) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Required field marker */
+.required { color: #c0392b; font-weight: 700; margin-left: 2px; }
+
+/* Footer contact links */
+.footer-contact-link {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-contact-link:hover,
+.footer-contact-link:focus-visible { color: var(--gold-light); }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -355,7 +420,8 @@ p { color: var(--text-muted); line-height: 1.75; }
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.4);
+  /* Increased from 0.4 to 0.7 opacity — now ~4.8:1 contrast on navy-dark */
+  color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
 }
 
@@ -391,7 +457,8 @@ p { color: var(--text-muted); line-height: 1.75; }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--gold);
+  /* --gold-accessible (#7a6018) gives 5.4:1 contrast on white — passes WCAG AA */
+  color: var(--gold-accessible);
   margin-bottom: 0.75rem;
 }
 
@@ -1053,7 +1120,8 @@ p { color: var(--text-muted); line-height: 1.75; }
 
 .footer-bottom p {
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.35);
+  /* Increased from 0.35 to 0.6 opacity — passes WCAG AA on navy-dark background */
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .footer-legal {
@@ -1063,12 +1131,26 @@ p { color: var(--text-muted); line-height: 1.75; }
 
 .footer-legal a {
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .footer-legal a:hover { color: rgba(255, 255, 255, 0.65); }
+
+/* Reduced motion — disable transforms/transitions for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+  .service-card, .why-card, .testimonial-card {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 /* Contact link */
 .contact-link {
